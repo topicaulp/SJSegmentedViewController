@@ -80,6 +80,8 @@ class SJSegmentedScrollView: UIScrollView {
         }
     }
     
+    open var autoScrollEnabled: Bool?  = true
+    
     var topSpacing: CGFloat?
     
     var bottomSpacing: CGFloat?
@@ -362,19 +364,22 @@ class SJSegmentedScrollView: UIScrollView {
                           change: CGFloat,
                           oldPosition: CGPoint) {
         
-        let offset = (headerViewHeight! - headerViewOffsetHeight!)
-        
-        if contentOffset.y < offset {
-            
-            if scrollView.contentOffset.y >= 0.0 {
+       
+            let offset = (headerViewHeight! - headerViewOffsetHeight!)
+            if contentOffset.y < offset {
                 
-                var yPos = contentOffset.y - change
-                yPos = yPos > offset ? offset : yPos
-                let updatedPos = CGPoint(x: contentOffset.x, y: yPos)
-                setContentOffset(self, point: updatedPos)
-                setContentOffset(scrollView, point: oldPosition)
+                if scrollView.contentOffset.y >= 0.0 {
+                    
+                    var yPos = contentOffset.y - change
+                    yPos = yPos > offset ? offset : yPos
+                    let updatedPos = CGPoint(x: contentOffset.x, y: yPos)
+                    setContentOffset(self, point: updatedPos)
+                    if autoScrollEnabled ?? true {
+                        setContentOffset(scrollView, point: oldPosition)
+                    }
+                }
             }
-        }
+        
     }
 
 	override func observeValue(forKeyPath keyPath: String?,
